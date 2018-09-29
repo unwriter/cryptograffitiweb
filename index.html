@@ -1,0 +1,72 @@
+<html>
+<head>
+<style>
+body.launcher {
+  padding: 100px;
+}
+form {
+  width: 300px;
+  margin: 0 auto;
+}
+input {
+  font-size: 14px;
+  padding: 5px;
+  width: 100%;
+}
+input[type=submit]{
+  background: black;
+  color: white;
+}
+</style>
+<script>
+/*
+* Cryptograffiti to HTML
+* 1. append the address as hash
+* 2. or just load the origin page and enter the address in the input field 
+*/
+var run = function(addr) {
+  console.log("addr = ", addr)
+  var query = {
+    "v": 2,
+    "q": { "find": { "in.e.a": addr }, "limit": 1 }
+  }
+  var b64 = btoa(JSON.stringify(query));
+  var url = "https://bitdb.network/q/" + b64;
+  var header = {
+    headers: { key: "qqjtyk2qmphm4d2ddqfeg855we2u4ly7m59a0tuenn" }
+  };
+  fetch(url, header).then(function(r) {
+    return r.json()
+  }).then(function(r) {
+    // Extract only the outputs
+    let outputs = r.confirmed[0].out;
+    // Extract only the s2 attributes from the outputs and merge them together to form a string
+    let content = outputs.reduce(function(acc, current) {
+      return acc + current.s2
+    }, "")
+    // Write to browser
+    console.log(content)
+    document.write(content)
+  })
+}
+document.addEventListener("DOMContentLoaded", function(e) {
+  var hash = window.location.hash
+  if (hash && hash.length > 1) {
+    var addr = hash.slice(1) 
+    run(addr)
+  }
+  document.querySelector("form").addEventListener("submit", function(e) {
+    var addr = document.querySelector("#addr").value;
+    run(addr)
+    e.preventDefault();
+  })
+})
+</script>
+</head>
+<body class='launcher'>
+<form>
+  <input type='text' id='addr' placeholder='enter the address from cryptograffiti'>
+  <input type="submit" value="Go">
+</form>
+</body>
+</html>
