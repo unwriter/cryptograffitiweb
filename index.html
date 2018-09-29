@@ -12,11 +12,7 @@ input[type=submit]{ background: black; color: white; }
 * 1. append the address as hash
 * 2. or just load the origin page and enter the address in the input field 
 */
-var run = function(addr) {
-  var query = {
-    "v": 2,
-    "q": { "find": { "in.e.a": addr }, "limit": 1 }
-  }
+var run = function(query) {
   var b64 = btoa(JSON.stringify(query));
   var url = "https://bitdb.network/q/" + b64;
   var header = {
@@ -40,11 +36,25 @@ document.addEventListener("DOMContentLoaded", function(e) {
   var hash = window.location.hash
   if (hash && hash.length > 1) {
     var addr = hash.slice(1) 
-    run(addr)
+    if (addr[0] === '@') {
+      let tx = addr.slice(1)
+      run({
+        "v": 2,
+        "q": { "find": { "tx.h": tx } }
+      })
+    } else {
+      run({
+        "v": 2,
+        "q": { "find": { "in.e.a": addr } }
+      })
+    }
   }
   document.querySelector("form").addEventListener("submit", function(e) {
-    var addr = document.querySelector("#addr").value;
-    run(addr)
+    var tx = document.querySelector("#addr").value;
+    run({
+      "v": 2,
+      "q": { "find": { "tx.h": tx } }
+    })
     e.preventDefault();
   })
 })
@@ -52,7 +62,7 @@ document.addEventListener("DOMContentLoaded", function(e) {
 </head>
 <body class='launcher'>
 <form>
-  <input type='text' id='addr' placeholder='enter the address from cryptograffiti'>
+  <input type='text' id='addr' placeholder='enter the transaction hash from cryptograffiti'>
   <input type="submit" value="Go">
 </form>
 </body>
