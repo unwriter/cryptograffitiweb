@@ -1,22 +1,10 @@
 <html>
 <head>
 <style>
-body.launcher {
-  padding: 100px;
-}
-form {
-  width: 300px;
-  margin: 0 auto;
-}
-input {
-  font-size: 14px;
-  padding: 5px;
-  width: 100%;
-}
-input[type=submit]{
-  background: black;
-  color: white;
-}
+body.launcher { padding: 100px; }
+form { width: 300px; margin: 0 auto; }
+input { font-size: 14px; padding: 5px; width: 100%; }
+input[type=submit]{ background: black; color: white; }
 </style>
 <script>
 /*
@@ -25,7 +13,6 @@ input[type=submit]{
 * 2. or just load the origin page and enter the address in the input field 
 */
 var run = function(addr) {
-  console.log("addr = ", addr)
   var query = {
     "v": 2,
     "q": { "find": { "in.e.a": addr }, "limit": 1 }
